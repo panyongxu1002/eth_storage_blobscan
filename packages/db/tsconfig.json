@@ -1,0 +1,4 @@
+{
+  "extends": "@blobscan/tsconfig/base.production.json",
+  "include": ["index.ts", "prisma/**/*.ts", "test/**/*.ts", "vitest.config.ts"]
+}

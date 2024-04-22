@@ -1,0 +1,299 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["tracing", "metrics"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum BlobStorage {
+  FILE_SYSTEM @map("file_system")
+  GOOGLE      @map("google")
+  POSTGRES    @map("postgres")
+  SWARM       @map("swarm")
+
+  @@map("blob_storage")
+}
+
+enum Rollup {
+  ARBITRUM @map("arbitrum")
+  BASE     @map("base")
+  LINEA    @map("linea")
+  OPTIMISM @map("optimism")
+  PARADEX  @map("paradex")
+  SCROLL   @map("scroll")
+  STARKNET @map("starknet")
+  ZKSYNC   @map("zksync")
+  MODE     @map("mode")
+  ZORA     @map("zora")
+
+  @@map("rollup")
+}
+
+model BlockchainSyncState {
+  id                  Int  @id @default(autoincrement())
+  lastAggregatedBlock Int? @map("last_aggregated_block")
+  lastFinalizedBlock  Int? @map("last_finalized_block")
+  lastLowerSyncedSlot Int? @map("last_lower_synced_slot")
+  lastUpperSyncedSlot Int? @map("last_upper_synced_slot")
+
+  @@map("blockchain_sync_state")
+}
+
+model BlobStoragesState {
+  id           Int     @id @default(autoincrement())
+  swarmDataId  String? @map("swarm_data_id")
+  swarmDataTTL Int?    @map("swarm_data_ttl")
+
+  @@map("blob_storages_state")
+}
+
+model Address {
+  address                    String   @id
+  firstBlockNumberAsSender   Int?     @map("first_block_number_as_sender")
+  firstBlockNumberAsReceiver Int?     @map("first_block_number_as_receiver")
+  insertedAt                 DateTime @default(now()) @map("inserted_at")
+  updatedAt                  DateTime @default(now()) @map("updated_at")
+
+  transactionsAsSender   Transaction[] @relation("senderAddressRelation")
+  transactionsAsReceiver Transaction[] @relation("receiverAddressRelation")
+
+  @@index([insertedAt])
+  @@map("address")
+}
+
+model Blob {
+  versionedHash    String   @id @map("versioned_hash")
+  commitment       String   @unique
+  proof            String?
+  size             Int
+  firstBlockNumber Int?     @map("first_block_number")
+  insertedAt       DateTime @default(now()) @map("inserted_at")
+  updatedAt        DateTime @default(now()) @map("updated_at")
+
+  dataStorageReferences BlobDataStorageReference[]
+  transactions          BlobsOnTransactions[]
+
+  @@index([insertedAt])
+  @@map("blob")
+}
+
+model BlobData {
+  id   String @id
+  data Bytes
+
+  @@map("blob_data")
+}
+
+model BlobDataStorageReference {
+  blobHash      String      @map("blob_hash")
+  blobStorage   BlobStorage @map("storage")
+  dataReference String      @map("data_reference")
+
+  blob Blob @relation(fields: [blobHash], references: [versionedHash])
+
+  @@id([blobHash, blobStorage])
+  @@map("blob_data_storage_reference")
+}
+
+model Block {
+  hash                  String   @id
+  number                Int
+  timestamp             DateTime @unique
+  slot                  Int      @unique
+  blobGasUsed           Decimal  @map("blob_gas_used") @db.Decimal(100, 0)
+  excessBlobGas         Decimal  @map("excess_blob_gas") @db.Decimal(100, 0)
+  blobGasPrice          Decimal  @map("blob_gas_price") @db.Decimal(100, 0)
+  blobAsCalldataGasUsed Decimal  @map("blob_as_calldata_gas_used") @db.Decimal(100, 0)
+  insertedAt            DateTime @default(now()) @map("inserted_at")
+  updatedAt             DateTime @default(now()) @map("updated_at")
+
+  transactions     Transaction[]
+  transactionForks TransactionFork[]
+
+  @@index([insertedAt])
+  @@map("block")
+}
+
+model Transaction {
+  hash                  String   @id
+  fromId                String   @map("from_id")
+  toId                  String   @map("to_id")
+  blockHash             String   @map("block_hash")
+  maxFeePerBlobGas      Decimal  @map("max_fee_per_blob_gas") @db.Decimal(100, 0)
+  gasPrice              Decimal  @map("gas_price") @db.Decimal(100, 0)
+  blobAsCalldataGasUsed Decimal  @map("blob_as_calldata_gas_used") @db.Decimal(100, 0)
+  rollup                Rollup?
+  insertedAt            DateTime @default(now()) @map("inserted_at")
+  updatedAt             DateTime @default(now()) @map("updated_at")
+
+  blobs            BlobsOnTransactions[]
+  block            Block                 @relation(fields: [blockHash], references: [hash])
+  from             Address               @relation("senderAddressRelation", fields: [fromId], references: [address])
+  to               Address               @relation("receiverAddressRelation", fields: [toId], references: [address])
+  transactionForks TransactionFork[]
+
+  @@index([insertedAt])
+  @@index([blockHash])
+  @@map("transaction")
+}
+
+model BlobsOnTransactions {
+  blobHash String @map("blob_hash")
+  txHash   String @map("tx_hash")
+  index    Int
+
+  blob        Blob        @relation(fields: [blobHash], references: [versionedHash])
+  transaction Transaction @relation(fields: [txHash], references: [hash])
+
+  @@id([txHash, index])
+  @@index([blobHash])
+  @@index([txHash])
+  @@map("blobs_on_transactions")
+}
+
+model TransactionFork {
+  hash       String
+  blockHash  String   @map("block_hash")
+  insertedAt DateTime @default(now()) @map("inserted_at")
+  updatedAt  DateTime @default(now()) @map("updated_at")
+
+  block       Block       @relation(fields: [blockHash], references: [hash])
+  transaction Transaction @relation(fields: [hash], references: [hash])
+
+  @@id([hash, blockHash])
+  @@map("transaction_fork")
+}
+
+// Block Metrics
+model BlockOverallStats {
+  id                         Int     @id @default(autoincrement())
+  totalBlocks                Int     @map("total_blocks")
+  totalBlobGasUsed           Decimal @map("total_blob_gas_used") @db.Decimal(100, 0)
+  totalBlobAsCalldataGasUsed Decimal @map("total_blob_as_calldata_gas_used") @db.Decimal(100, 0)
+  totalBlobFee               Decimal @map("total_blob_fee") @db.Decimal(100, 0)
+  totalBlobAsCalldataFee     Decimal @map("total_blob_as_calldata_fee") @db.Decimal(100, 0)
+  avgBlobFee                 Float   @map("avg_blob_fee")
+  avgBlobAsCalldataFee       Float   @map("avg_blob_as_calldata_fee")
+  avgBlobGasPrice            Float   @map("avg_blob_gas_price")
+
+  updatedAt DateTime @map("updated_at")
+
+  @@map("block_overall_stats")
+}
+
+model BlockDailyStats {
+  day                        DateTime @id @db.Date
+  totalBlocks                Int      @map("total_blocks")
+  totalBlobGasUsed           Decimal  @map("total_blob_gas_used") @db.Decimal(100, 0)
+  totalBlobAsCalldataGasUsed Decimal  @map("total_blob_as_calldata_gas_used") @db.Decimal(100, 0)
+  totalBlobFee               Decimal  @map("total_blob_fee") @db.Decimal(100, 0)
+  totalBlobAsCalldataFee     Decimal  @map("total_blob_as_calldata_fee") @db.Decimal(100, 0)
+  avgBlobFee                 Float    @map("avg_blob_fee")
+  avgBlobAsCalldataFee       Float    @map("avg_blob_as_calldata_fee")
+  avgBlobGasPrice            Float    @map("avg_blob_gas_price")
+
+  @@unique([day])
+  @@index([day])
+  @@map("block_daily_stats")
+}
+
+// Transaction metrics
+
+model TransactionOverallStats {
+  id                   Int   @id @default(autoincrement())
+  totalTransactions    Int   @map("total_transactions")
+  totalUniqueReceivers Int   @map("total_unique_receivers")
+  totalUniqueSenders   Int   @map("total_unique_senders")
+  avgMaxBlobGasFee     Float @map("avg_max_blob_gas_fee")
+
+  updatedAt DateTime @map("updated_at")
+
+  @@map("transaction_overall_stats")
+}
+
+model TransactionDailyStats {
+  day                  DateTime @id @db.Date
+  totalTransactions    Int      @map("total_transactions")
+  totalUniqueSenders   Int      @map("total_unique_senders")
+  totalUniqueReceivers Int      @map("total_unique_receivers")
+  avgMaxBlobGasFee     Float    @map("avg_max_blob_gas_fee")
+
+  @@map("transaction_daily_stats")
+}
+
+// Blob metrics
+model BlobOverallStats {
+  id               Int    @id @default(autoincrement())
+  totalBlobs       Int    @map("total_blobs")
+  totalUniqueBlobs Int    @map("total_unique_blobs")
+  totalBlobSize    BigInt @map("total_blob_size")
+  avgBlobSize      Float  @map("avg_blob_size")
+
+  updatedAt DateTime @map("updated_at")
+
+  @@map("blob_overall_stats")
+}
+
+model BlobDailyStats {
+  day              DateTime @id @db.Date
+  totalBlobs       Int      @map("total_blobs")
+  totalUniqueBlobs Int      @map("total_unique_blobs")
+  totalBlobSize    BigInt   @map("total_blob_size")
+  avgBlobSize      Float    @map("avg_blob_size")
+
+  @@map("blob_daily_stats")
+}
+
+// NextAuth.js Models
+// NOTE: When using postgresql, mysql or sqlserver, 
+// uncomment the @db.Text annotations below
+// @see https://next-auth.js.org/schemas/models
+// model Account {
+//     id                String  @id @default(cuid())
+//     userId            String
+//     type              String
+//     provider          String
+//     providerAccountId String
+//     refresh_token     String?  @db.Text
+//     access_token      String?  @db.Text
+//     expires_at        Int?
+//     token_type        String?
+//     scope             String?
+//     id_token          String?  @db.Text
+//     session_state     String?
+//     user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+//     @@unique([provider, providerAccountId])
+// }
+
+// model Session {
+//     id           String   @id @default(cuid())
+//     sessionToken String   @unique
+//     userId       String
+//     expires      DateTime
+//     user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+// }
+
+// model User {
+//     id            String    @id @default(cuid())
+//     name          String?
+//     email         String?   @unique
+//     emailVerified DateTime?
+//     image         String?
+//     accounts      Account[]
+//     sessions      Session[]
+// }
+
+// model VerificationToken {
+//     identifier String
+//     token      String   @unique
+//     expires    DateTime
+
+//     @@unique([identifier, token])
+// }

@@ -1,0 +1,86 @@
+import { Rollup } from "@prisma/client";
+
+export const NEW_DATA = {
+  blocks: [
+    {
+      hash: "newBlockHash001",
+      number: 2001,
+      timestamp: "2023-09-01T10:00:00Z",
+      slot: 300,
+      blobGasUsed: 5000000,
+      excessBlobGas: 10000,
+      blobGasPrice: 20,
+      blobAsCalldataGasUsed: 250000,
+      insertedAt: "2023-09-01T10:00:00Z",
+      updatedAt: "2023-09-01T10:00:00Z",
+    },
+    {
+      hash: "newBlockHash002",
+      number: 2002,
+      timestamp: "2023-09-01T12:00:00Z",
+      slot: 306,
+      blobGasUsed: 5500000,
+      excessBlobGas: 15000,
+      blobGasPrice: 22,
+      blobAsCalldataGasUsed: 255000,
+      insertedAt: "2023-09-01T12:00:00Z",
+      updatedAt: "2023-09-01T12:00:00Z",
+    },
+  ],
+  transactions: [
+    {
+      hash: "newTxHash001",
+      fromId: "address6",
+      toId: "address5",
+      blockHash: "newBlockHash001",
+      maxFeePerBlobGas: 100,
+      gasPrice: 10,
+      blobAsCalldataGasUsed: 1000,
+      rollup: Rollup.BASE,
+      insertedAt: "2023-09-01T10:00:00Z",
+      updatedAt: "2023-09-01T10:00:00Z",
+    },
+    {
+      hash: "newTxHash002",
+      fromId: "address4",
+      toId: "address3",
+      blockHash: "newBlockHash002",
+      maxFeePerBlobGas: 110,
+      gasPrice: 11,
+      blobAsCalldataGasUsed: 1100,
+      rollup: Rollup.OPTIMISM,
+      insertedAt: "2023-09-01T12:00:00Z",
+      updatedAt: "2023-09-01T12:00:00Z",
+    },
+  ],
+  blobs: [
+    {
+      versionedHash: "newBlobHash001",
+      commitment: "newCommitment001",
+      size: 500,
+      firstBlockNumber: 2001,
+      insertedAt: "2023-09-01T10:00:00Z",
+      updatedAt: "2023-09-01T10:00:00Z",
+    },
+    {
+      versionedHash: "newBlobHash002",
+      commitment: "newCommitment002",
+      size: 500,
+      firstBlockNumber: 2002,
+      insertedAt: "2023-09-01T12:00:00Z",
+      updatedAt: "2023-09-01T12:00:00Z",
+    },
+  ],
+  blobsOnTransactions: [
+    {
+      blobHash: "newBlobHash001",
+      txHash: "newTxHash001",
+      index: 0,
+    },
+    {
+      blobHash: "newBlobHash002",
+      txHash: "newTxHash002",
+      index: 0,
+    },
+  ],
+};

@@ -1,0 +1,22 @@
+{
+  "$schema": "https://unpkg.com/@changesets/config@3.0.0/schema.json",
+  "changelog": [
+    "@changesets/changelog-github",
+    { "repo": "Blobscan/blobscan" }
+  ],
+  "commit": false,
+  "fixed": [],
+  "linked": [],
+  "access": "restricted",
+  "baseBranch": "next",
+  "updateInternalDependencies": "patch",
+  "privatePackages": { "version": true, "tag": true },
+  "ignore": [
+    "@blobscan/eslint-config",
+    "@blobscan/github",
+    "@blobscan/svgo-config",
+    "@blobscan/tailwind-config",
+    "@blobscan/test",
+    "@blobscan/tsconfig"
+  ]
+}

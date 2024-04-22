@@ -1,0 +1,22 @@
+{
+  "name": "@blobscan/test",
+  "description": "Blobscan's test library",
+  "private": true,
+  "version": "0.0.1",
+  "main": "./src/index.ts",
+  "scripts": {
+    "test:setup": "../../scripts/run-integration.sh"
+  },
+  "eslintConfig": {
+    "root": true,
+    "extends": [
+      "@blobscan/eslint-config/base"
+    ]
+  },
+  "devDependencies": {
+    "@prisma/client": "^5.5.2"
+  },
+  "prisma": {
+    "schema": "../db/prisma/schema.prisma"
+  }
+}
