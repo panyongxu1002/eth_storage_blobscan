@@ -91,7 +91,7 @@ export const indexData = jwtAuthedProcedure
 
       if (!falg) return;
 
-      const operations = [];
+      const operations: any[] = [];
 
       let dbBlobStorageRefs: BlobDataStorageReference[] | undefined;
 
