@@ -74,22 +74,22 @@ export const indexData = jwtAuthedProcedure
         return false;
       }
 
-      let falg = false;
-      for (let i = 0; i < input.blobs.length; i++) {
-        const blob1: any = input.blobs[i];
-        if (
-          hasToAddress(
-            "0x804c520d3c084c805e37a35e90057ac32831f96f",
-            // "0xff00000000000000000000000000000000911911",
-            blob1.txHash
-          )
-        ) {
-          falg = true;
-          break;
-        }
-      }
+      // let falg = false;
+      // for (let i = 0; i < input.blobs.length; i++) {
+      //   const blob1: any = input.blobs[i];
+      //   if (
+      //     hasToAddress(
+      //       "0x804c520d3c084c805e37a35e90057ac32831f96f",
+      //       // "0xff00000000000000000000000000000000911911",
+      //       blob1.txHash
+      //     )
+      //   ) {
+      //     falg = true;
+      //     break;
+      //   }
+      // }
 
-      if (!falg) return;
+      // if (!falg) return;
 
       const operations: any[] = [];
 
