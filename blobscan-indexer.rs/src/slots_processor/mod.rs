@@ -177,7 +177,7 @@ impl SlotsProcessor {
             }
         };
 
-        println!("blobs: {:?}", blobs);
+        // println!("blobs: {:?}", blobs);
         // Create entities to be indexed
 
         let block_entity = Block::try_from((&execution_block, slot))?;
