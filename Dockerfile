@@ -13,13 +13,13 @@ WORKDIR /app
 
 # pnpm fetch does require only lockfile
 COPY pnpm-lock.yaml ./
-RUN --mount=type=cache,id=pnpm,target=/root/.pnpm-store/v3 sudo pnpm fetch -r
+RUN --mount=type=cache,id=pnpm,target=/root/.pnpm-store/v3 pnpm fetch -r
 
 ADD . ./
-RUN --mount=type=cache,id=pnpm,target=/root/.pnpm-store/v3 sudo pnpm install -r
+RUN --mount=type=cache,id=pnpm,target=/root/.pnpm-store/v3 pnpm install -r
 
 # Do not perform environment variable validation during build time
-RUN SKIP_ENV_VALIDATION=true sudo npm run build
+RUN SKIP_ENV_VALIDATION=true npm run build
 
 RUN mkdir -p /tmp/blobscan-blobs
 RUN chown node:node . /tmp/blobscan-blobs -R
