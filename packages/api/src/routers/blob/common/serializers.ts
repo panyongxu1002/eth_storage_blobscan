@@ -63,6 +63,7 @@ export const serializedBaseBlobSchema = z.object({
   dataStorageReferences: z.array(serializedBlobDataStorageReferenceSchema),
 });
 
+
 export type SerializedBaseBlob = z.infer<typeof serializedBaseBlobSchema>;
 
 export const serializedBlobOnTransactionSchema = serializedBaseBlobSchema.merge(
@@ -164,4 +165,37 @@ export function serializeBlob(blob: Blob): SerializedBlob {
         };
       }),
   };
+}
+
+export type BlobSchema = {
+  data: string;
+};
+
+export function serializeBlobSchema(blob: Blob): any {
+  console.log("🚀 ~ serializeBlobSchema ~ blob:", blob)
+  const { transactions, ...baseBlob } = blob;
+  return {
+    data: blob.data
+  }
+
+  // return {
+  //   ...serializeBaseBlob(baseBlob),
+  //   data: blob.data,
+  //   transactions: transactions
+  //     .sort((a, b) => a.transaction.hash.localeCompare(b.transaction.hash))
+  //     .map(({ index, transaction }) => {
+  //       const { block, hash } = transaction;
+  //       const { number } = block;
+
+  //       return {
+  //         index,
+  //         hash,
+  //         ...serializeExpandedTransaction(transaction),
+  //         block: {
+  //           number,
+  //           ...serializeExpandedBlock(block),
+  //         },
+  //       };
+  //     }),
+  // };
 }

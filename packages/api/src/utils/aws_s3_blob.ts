@@ -6,6 +6,7 @@ import {
   ListBucketsCommand,
   S3Client,
   PutObjectCommand,
+  GetObjectCommand,
 } from "@aws-sdk/client-s3";
 import fs from "fs";
 import { fileURLToPath } from "url";
@@ -48,5 +49,24 @@ export const upload_AWS_S3 = async ({ versionedHash, data }: any) => {
     fileStream.close();
     // 删除临时文件
     fs.unlinkSync(`${versionedHash}.txt`);
+  }
+};
+
+// 执行上传操作
+export const get_AWS_S3 = async ({ versionedHash }: any) => {
+  // console.log("🚀 ~ constupload_AWS_S3= ~ fileStream:", fileStream);
+  // 设置 S3 中的文件名称和路径
+  const getParams = {
+    Bucket: process.env.AWS_S3_STORAGE_BUCKET_NAME, // 替换为你的S3存储桶名称
+    Key: `${versionedHash}.txt`, // 文件名及路径
+  };
+  try {
+    const response: any = await s3Client.send(new GetObjectCommand(getParams));
+    const str = await response.Body.transformToString();
+    // console.log("🚀 ~ constupload_AWS_S3= ~ getParams: ", str);
+    return str;
+  } catch (err) {
+    console.error("Error uploading file:", err);
+  } finally {
   }
 };
