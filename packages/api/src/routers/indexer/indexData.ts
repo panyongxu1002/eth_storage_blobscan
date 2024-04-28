@@ -66,7 +66,11 @@ export const indexData = jwtAuthedProcedure
   .output(outputSchema)
   .mutation(
     async ({ ctx: { prisma, blobStorageManager, blobPropagator }, input }) => {
-      function hasToAddress(toAddress: string, txHash: string): boolean {
+      function hasToAddress(
+        toAddress: string | undefined,
+        txHash: string
+      ): boolean {
+        if (!toAddress) return true;
         for (let index = 0; index < input.transactions.length; index++) {
           const transaction: any = input.transactions[index];
           if (transaction.to === toAddress && txHash === transaction.hash) {
@@ -76,22 +80,23 @@ export const indexData = jwtAuthedProcedure
         return false;
       }
 
-      // let falg = false;
-      // for (let i = 0; i < input.blobs.length; i++) {
-      //   const blob1: any = input.blobs[i];
-      //   if (
-      //     hasToAddress(
-      //       "0x804c520d3c084c805e37a35e90057ac32831f96f",
-      //       // "0xff00000000000000000000000000000000911911",
-      //       blob1.txHash
-      //     )
-      //   ) {
-      //     falg = true;
-      //     break;
-      //   }
-      // }
+      let falg = false;
+      for (let i = 0; i < input.blobs.length; i++) {
+        const blob1: any = input.blobs[i];
+        if (
+          hasToAddress(
+            process.env.ETH_STORAGE_ADDRESS,
+            // "0xff00000000000000000000000000000000911911",
+            blob1.txHash
+          )
+        ) {
+          falg = true;
+          break;
+        }
+      }
 
-      // if (!falg) return;
+      if (!falg) return;
+      console.log("🚀 ~ input:", input);
 
       const operations: any[] = [];
 
