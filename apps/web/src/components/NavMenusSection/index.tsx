@@ -20,6 +20,7 @@ import {
 } from "~/utils";
 import { Button } from "../Button";
 import { NavItem } from "./NavItem";
+import { PresentationChartBarIcon } from "@heroicons/react/24/outline";
 
 const resolveApiUrl = () =>
   env.NEXT_PUBLIC_NETWORK_NAME === "mainnet"
@@ -84,15 +85,15 @@ export const NavMenusSection: React.FC = () => {
               />
             )}
             <NavItem
-              label="API"
-              icon={<CommandLineIcon />}
-              href={resolveApiUrl()}
+              label="Monitoring "
+              icon={<PresentationChartBarIcon />}
+              href="/monitoring"
             />
-            <NavItem
+            {/* <NavItem
               label="Docs"
               icon={<BookOpenIcon />}
               href="https://docs.blobscan.com"
-            />
+            /> */}
           </div>
         </div>
       </div>

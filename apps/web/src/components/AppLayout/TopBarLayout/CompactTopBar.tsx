@@ -9,7 +9,7 @@ export const CompactTopBar = function () {
       <div className="z-10 sm:hidden">
         <TopBarSurface>
           <div className="flex w-full items-center justify-between">
-            <BlobscanLogo className="w-40" />
+            <BlobscanLogo />
             <ThemeModeButton />
           </div>
         </TopBarSurface>

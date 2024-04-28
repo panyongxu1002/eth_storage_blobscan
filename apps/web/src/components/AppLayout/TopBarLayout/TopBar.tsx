@@ -11,7 +11,7 @@ export const TopBar: React.FC = () => {
       <TopBarSurface>
         <div className="flex h-full items-center justify-between">
           <div className="flex grow items-center gap-12">
-            <BlobscanLogo className="w-40" />
+            <BlobscanLogo />
           </div>
           <div className="flex grow-[3] items-center justify-end gap-5">
             <div className="self-end">

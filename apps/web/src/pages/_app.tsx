@@ -31,12 +31,12 @@ function App({ Component, pageProps }: NextAppProps) {
       highlightColor={resolvedTheme === "dark" ? "#7D80AB" : "#E2CFFF"}
     >
       <Head>
-        <title>Blobscan</title>
+        <title>EthStorage Blobscan</title>
         <meta
           name="description"
           content="Blobscan is the first EIP4844 Blob Transaction explorer, a web-based application that offers a seamless experience for navigating and indexing blob data."
         />
-        <link rel="icon" href="/favicon.ico" />
+        <link rel="icon" href="/logo.png" />
       </Head>
       <AppLayout>
         <Component {...pageProps} />
