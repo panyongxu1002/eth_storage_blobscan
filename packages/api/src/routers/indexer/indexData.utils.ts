@@ -191,3 +191,27 @@ export function createDBBlobs({
     }
   );
 }
+
+export function createS3Blobs({
+  blobs
+}: IndexDataInput): WithoutTimestampFields<any>[] {
+  const uniqueBlobVersionedHashes = Array.from(
+    new Set(blobs.map((b) => b.versionedHash))
+  );
+
+  return uniqueBlobVersionedHashes.map<WithoutTimestampFields<any>>(
+    (versionedHash) => {
+      const blob = blobs.find((b) => b.versionedHash === versionedHash);
+
+      // Type safety check to make TS happy
+      if (!blob) {
+        throw new Error(`Blob ${versionedHash} not found`);
+      }
+
+      return {
+        versionedHash: blob.versionedHash,
+        data: blob.data,
+      };
+    }
+  );
+}

@@ -2,11 +2,13 @@ import type { BlobDataStorageReference } from "@blobscan/db";
 import { toBigIntSchema, z } from "@blobscan/zod";
 
 import { jwtAuthedProcedure } from "../../procedures";
+import { upload_AWS_S3 } from "../../utils/aws_s3_blob";
 import { INDEXER_PATH } from "./common";
 import {
   createDBBlobs,
   createDBBlock,
   createDBTransactions,
+  createS3Blobs,
 } from "./indexData.utils";
 
 const rawBlockSchema = z.object({
@@ -179,6 +181,8 @@ export const indexData = jwtAuthedProcedure
 
       // 3. Execute all database operations in a single transaction
       await prisma.$transaction(operations);
+
+      createS3Blobs(input).map((blob) => upload_AWS_S3(blob));
 
       // 4. Propagate blobs to storages
       if (blobPropagator) {
