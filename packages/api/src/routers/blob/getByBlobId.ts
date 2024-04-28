@@ -10,6 +10,7 @@ import { publicProcedure } from "../../procedures";
 import { retrieveBlobData } from "../../utils";
 import { createBlobSelect } from "./common/selects";
 import { serializeBlob, serializedBlobSchema } from "./common/serializers";
+import { get_AWS_S3 } from "../../utils/aws_s3_blob";
 
 const inputSchema = z
   .object({
@@ -49,11 +50,18 @@ export const getByBlobId = publicProcedure
       });
     }
 
-    const { data: blobData } = await retrieveBlobData(
-      blobStorageManager,
-      queriedBlob.dataStorageReferences
-    );
+    // 老方法
+    // const { data: blobData } = await retrieveBlobData(
+    //   blobStorageManager,
+    //   queriedBlob.dataStorageReferences
+    // );
 
+    // 取AWS_S3 blobData
+    let blobData = await get_AWS_S3({ versionedHash: id });
+    if (blobData.length) {
+      // 去掉 ""
+      blobData = blobData.slice(1,-1)
+    }
     return serializeBlob({
       ...queriedBlob,
       data: blobData,
