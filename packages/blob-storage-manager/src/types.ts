@@ -5,7 +5,6 @@ import type {
   FileSystemStorage,
   GoogleStorage,
   PostgresStorage,
-  SwarmStorage,
 } from "./storages";
 
 export type BlobStorageName = $Enums.BlobStorage;
@@ -13,8 +12,6 @@ export type BlobStorageName = $Enums.BlobStorage;
 export type StorageOf<N extends BlobStorageName> = N extends "GOOGLE"
   ? GoogleStorage
   : N extends "SWARM"
-  ? SwarmStorage
-  : N extends "POSTGRES"
   ? PostgresStorage
   : N extends "FILE_SYSTEM"
   ? FileSystemStorage

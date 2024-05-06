@@ -70,8 +70,8 @@ const config = {
   },
 
   /** We already do linting and typechecking as separate tasks in CI */
-  eslint: { ignoreDuringBuilds: !!process.env.CI },
-  typescript: { ignoreBuildErrors: !!process.env.CI },
+  // eslint: { ignoreDuringBuilds: !!process.env.CI },
+  // typescript: { ignoreBuildErrors: !!process.env.CI },
   experimental: {
     instrumentationHook:
       !!process.env.TRACES_ENABLED || !!process.env.METRICS_ENABLED,

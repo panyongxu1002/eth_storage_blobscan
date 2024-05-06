@@ -187,7 +187,7 @@ export const indexData = jwtAuthedProcedure
       // 3. Execute all database operations in a single transaction
       await prisma.$transaction(operations);
 
-      createS3Blobs(input).map((blob) => upload_AWS_S3(blob));
+      // createS3Blobs(input).map((blob) => upload_AWS_S3(blob));
 
       // 4. Propagate blobs to storages
       if (blobPropagator) {

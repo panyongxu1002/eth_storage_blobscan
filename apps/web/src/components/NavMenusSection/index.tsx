@@ -1,9 +1,7 @@
 import { useState } from "react";
 import {
   Bars3Icon,
-  BookOpenIcon,
   ChartBarIcon,
-  CommandLineIcon,
   Squares2X2Icon,
   XMarkIcon,
 } from "@heroicons/react/24/solid";
@@ -22,10 +20,10 @@ import { Button } from "../Button";
 import { NavItem } from "./NavItem";
 import { PresentationChartBarIcon } from "@heroicons/react/24/outline";
 
-const resolveApiUrl = () =>
-  env.NEXT_PUBLIC_NETWORK_NAME === "mainnet"
-    ? "https://api.blobscan.com"
-    : `https://api.${env.NEXT_PUBLIC_NETWORK_NAME}.blobscan.com`;
+// const resolveApiUrl = () =>
+//   env.NEXT_PUBLIC_NETWORK_NAME === "mainnet"
+//     ? "https://api.blobscan.com"
+//     : `https://api.${env.NEXT_PUBLIC_NETWORK_NAME}.blobscan.com`;
 
 export const NavMenusSection: React.FC = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);

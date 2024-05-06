@@ -60,10 +60,7 @@ export const SlidableList: FC<SlidableListProps> = function ({
             ...style,
           }}
         >
-          <div
-            ref={(ref: HTMLDivElement) => ref && refMap.set(item, ref)}
-            key={item.id}
-          >
+          <div ref={(ref: any) => ref && refMap.set(item, ref)} key={item.id}>
             {item.element}
           </div>
         </animated.div>

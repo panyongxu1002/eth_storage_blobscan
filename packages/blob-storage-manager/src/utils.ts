@@ -7,7 +7,6 @@ import {
   FileSystemStorage,
   GoogleStorage,
   PostgresStorage,
-  SwarmStorage,
 } from "./storages";
 import type { BlobStorageName } from "./types";
 
@@ -38,9 +37,6 @@ export async function createStorageFromEnv(
       break;
     case BLOB_STORAGE_NAMES.POSTGRES:
       [storage, storageError] = await PostgresStorage.tryCreateFromEnv(env);
-      break;
-    case BLOB_STORAGE_NAMES.SWARM:
-      [storage, storageError] = await SwarmStorage.tryCreateFromEnv(env);
       break;
     case BLOB_STORAGE_NAMES.FILE_SYSTEM:
       [storage, storageError] = await FileSystemStorage.tryCreateFromEnv(env);

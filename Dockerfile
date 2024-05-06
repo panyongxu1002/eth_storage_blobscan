@@ -8,7 +8,7 @@ ARG GIT_COMMIT
 ENV GIT_COMMIT=$GIT_COMMIT
 
 RUN apk add bash curl
-RUN npm install -g pnpm
+RUN npm install -g pnpm@8.6.0
 WORKDIR /app
 
 # pnpm fetch does require only lockfile

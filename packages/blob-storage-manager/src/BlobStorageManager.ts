@@ -74,7 +74,7 @@ export class BlobStorageManager {
 
                   const blob = await storage
                     .getBlob(reference)
-                    .then((data) => ({
+                    .then((data: any) => ({
                       data,
                       storage: storageName,
                     }));
