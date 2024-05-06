@@ -195,14 +195,15 @@ impl<'a> TryFrom<(&'a EthersTransaction, &'a EthersBlock<EthersTransaction>)> fo
                                 hash = hash
                             )
                         })?;
-
+                    
                     U256::from_str_radix(max_fee_per_blob_gas, 16)?
                 }
                 None => {
-                    return Err(anyhow::anyhow!(
-                        "Missing `maxFeePerBlobGas` field in transaction {hash}",
-                        hash = hash
-                    ))
+                    // return Err(anyhow::anyhow!(
+                    //     "Missing `maxFeePerBlobGas` field in transaction {hash}",
+                    //     hash = hash
+                    // ))
+                    U256::from_str_radix("0", 16)?
                 }
             },
         })

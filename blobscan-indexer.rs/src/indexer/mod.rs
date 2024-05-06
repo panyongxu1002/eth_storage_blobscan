@@ -136,7 +136,7 @@ impl Indexer {
         println!("target_lowest_slot: {:?}", target_lowest_slot);
         tokio::spawn(async move {
             if let BlockId::Slot(slot) = start_block_id {
-              println!("slot: {:?}", slot);
+                println!("slot: {:?}", slot);
                 if slot <= target_lowest_slot {
                     debug!(
                         target = "indexer:historical_sync",
@@ -151,7 +151,7 @@ impl Indexer {
                 .run(&start_block_id, &BlockId::Slot(target_lowest_slot))
                 .await;
 
-              println!("result: {:?}", result);
+            println!("result: {:?}", result);
 
             if let Err(error) = result {
                 // TODO: Find a better way to handle this error

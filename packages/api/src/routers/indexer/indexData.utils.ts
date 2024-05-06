@@ -113,9 +113,9 @@ export function createDBTransactions({
     ({ from, gasPrice, hash, maxFeePerBlobGas, to }) => {
       const txBlobs = blobs.filter((b) => b.txHash === hash);
 
-      if (txBlobs.length === 0) {
-        throw new Error(`Blobs for transaction ${hash} not found`);
-      }
+      // if (txBlobs.length === 0) {
+      //   throw new Error(`Blobs for transaction ${hash} not found`);
+      // }
 
       const blobGasAsCalldataUsed = txBlobs.reduce(
         (acc, b) => acc + getEIP2028CalldataGas(b.data),
@@ -193,7 +193,7 @@ export function createDBBlobs({
 }
 
 export function createS3Blobs({
-  blobs
+  blobs,
 }: IndexDataInput): WithoutTimestampFields<any>[] {
   const uniqueBlobVersionedHashes = Array.from(
     new Set(blobs.map((b) => b.versionedHash))

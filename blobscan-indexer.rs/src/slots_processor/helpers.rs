@@ -1,6 +1,6 @@
-use std::collections::HashMap;
+use std::{collections::HashMap, str::FromStr};
 
-use ethers::types::{Block as EthersBlock, Transaction as EthersTransaction, H256};
+use ethers::types::{Block as EthersBlock, Transaction as EthersTransaction, H160, H256};
 
 use crate::{
     clients::beacon::types::Blob as BeaconBlob,
@@ -17,10 +17,29 @@ pub fn create_tx_hash_versioned_hashes_mapping(
             Some(versioned_hashes) => {
                 tx_to_versioned_hashes.insert(tx.hash, versioned_hashes);
             }
-            None => continue,
+            None => {
+                continue;
+            }
         };
     }
     Ok(tx_to_versioned_hashes)
+}
+
+pub fn create_tx_hash_mapping(
+    block: &EthersBlock<EthersTransaction>,
+) -> Result<Vec<H256>, anyhow::Error> {
+    let mut hashes: Vec<H256> = Vec::new();
+    for tx in &block.transactions {
+        if let Some(to_address) = tx.to {
+            let expected_address =
+                H160::from_str("804c520d3c084c805e37a35e90057ac32831f96f").unwrap();
+            if to_address == expected_address {
+                println!("tx.to: {:?}", tx.to);
+                hashes.push(tx.hash);
+            }
+        }
+    }
+    Ok(hashes)
 }
 
 pub fn create_versioned_hash_blob_mapping(

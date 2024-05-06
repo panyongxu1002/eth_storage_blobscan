@@ -1,3 +1,5 @@
+use std::str::FromStr;
+
 use anyhow::{anyhow, Context as AnyhowContext, Result};
 
 use ethers::prelude::*;
@@ -12,7 +14,10 @@ use crate::{
 };
 
 use self::error::{SlotProcessingError, SlotsProcessorError};
-use self::helpers::{create_tx_hash_versioned_hashes_mapping, create_versioned_hash_blob_mapping};
+use self::helpers::{
+    create_tx_hash_mapping, create_tx_hash_versioned_hashes_mapping,
+    create_versioned_hash_blob_mapping,
+};
 
 pub mod error;
 mod helpers;
@@ -84,7 +89,7 @@ impl SlotsProcessor {
         let beacon_client = self.context.beacon_client();
         let blobscan_client = self.context.blobscan_client();
         let provider = self.context.provider();
-        
+
         let beacon_block = match beacon_client.get_block(&BlockId::Slot(slot)).await? {
             Some(block) => block,
             None => {
@@ -138,16 +143,23 @@ impl SlotsProcessor {
             .await?
             .with_context(|| format!("Execution block {execution_block_hash} not found"))?;
 
-            // println!("execution_block: {:?}", execution_block);
+        // println!("execution_block: {:#?}", execution_block);
 
         let tx_hash_to_versioned_hashes =
             create_tx_hash_versioned_hashes_mapping(&execution_block)?;
+
+        let tx_hashs = create_tx_hash_mapping(&execution_block)?;
+
+        println!("tx_hashs: {:#?}", tx_hashs);
 
         if tx_hash_to_versioned_hashes.is_empty() {
             return Err(anyhow!("Blocks mismatch: Beacon block contains blob KZG commitments, but the corresponding execution block does not contain any blob transactions").into());
         }
 
-        println!("tx_hash_to_versioned_hashes: {:?}", tx_hash_to_versioned_hashes);
+        println!(
+            "tx_hash_to_versioned_hashes: {:#?}",
+            tx_hash_to_versioned_hashes
+        );
         // Fetch blobs and perform some checks
 
         let blobs = match beacon_client
@@ -182,7 +194,7 @@ impl SlotsProcessor {
 
         let block_entity = Block::try_from((&execution_block, slot))?;
 
-        println!("block_entity: {:?}", block_entity);
+        println!("block_entity: {:#?}", block_entity);
 
         let transactions_entities = execution_block
             .transactions
@@ -191,11 +203,10 @@ impl SlotsProcessor {
             .map(|tx| Transaction::try_from((tx, &execution_block)))
             .collect::<Result<Vec<Transaction>>>()?;
 
-
+        // println!("transactions_entities: {:?}", transactions_entities);
 
         let versioned_hash_to_blob = create_versioned_hash_blob_mapping(&blobs)?;
 
-        // println!("versioned_hash_to_blob: {:?}", versioned_hash_to_blob);
         let mut blob_entities: Vec<Blob> = vec![];
 
         for (tx_hash, versioned_hashes) in tx_hash_to_versioned_hashes.iter() {
@@ -221,6 +232,46 @@ impl SlotsProcessor {
 
         blobscan_client
             .index(block_entity, transactions_entities, blob_entities)
+            .await
+            .map_err(SlotProcessingError::ClientError)?;
+
+        let block_entity_other = Block::try_from((&execution_block, slot))?;
+
+        let transactions_entities_other = execution_block
+            .transactions
+            .iter()
+            .filter_map(|tx| {
+                if let Some(to_address) = &tx.to {
+                    let expected_address =
+                        H160::from_str("804c520d3c084c805e37a35e90057ac32831f96f").unwrap();
+                    if to_address == &expected_address && tx_hashs.contains(&tx.hash) {
+                        println!("txtxtxtx: {:?}", &tx);
+                        println!(
+                            "tx_hashs.contains(&tx.hash): {:?}",
+                            tx_hashs.contains(&tx.hash)
+                        );
+
+                        println!(
+                            "Transaction::try_from((tx, &execution_block)): {:?}",
+                            Transaction::try_from((tx, &execution_block))
+                        );
+
+                        Some(Transaction::try_from((tx, &execution_block)))
+                    } else {
+                        None
+                    }
+                } else {
+                    None
+                }
+            })
+            .collect::<Result<Vec<Transaction>>>()?;
+
+        println!(
+            "transactions_entities_other: {:?}",
+            transactions_entities_other
+        );
+        blobscan_client
+            .index(block_entity_other, transactions_entities_other, vec![])
             .await
             .map_err(SlotProcessingError::ClientError)?;
 

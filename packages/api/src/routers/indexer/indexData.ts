@@ -66,14 +66,12 @@ export const indexData = jwtAuthedProcedure
   .output(outputSchema)
   .mutation(
     async ({ ctx: { prisma, blobStorageManager, blobPropagator }, input }) => {
-      function hasToAddress(
-        toAddress: string | undefined,
-        txHash: string
-      ): boolean {
+      function hasToAddress(toAddress: string | undefined): boolean {
         if (!toAddress) return true;
         for (let index = 0; index < input.transactions.length; index++) {
           const transaction: any = input.transactions[index];
-          if (transaction.to === toAddress && txHash === transaction.hash) {
+          if (transaction.to === process.env.ETH_STORAGE_ADDRESS) {
+            console.log("🚀 ~ transaction.to:", transaction);
             return true;
           }
         }
@@ -81,22 +79,11 @@ export const indexData = jwtAuthedProcedure
       }
 
       let falg = false;
-      for (let i = 0; i < input.blobs.length; i++) {
-        const blob1: any = input.blobs[i];
-        if (
-          hasToAddress(
-            process.env.ETH_STORAGE_ADDRESS,
-            // "0xff00000000000000000000000000000000911911",
-            blob1.txHash
-          )
-        ) {
-          falg = true;
-          break;
-        }
+      if (hasToAddress(process.env.ETH_STORAGE_ADDRESS)) {
+        falg = true;
       }
 
       if (!falg) return;
-      console.log("🚀 ~ input:", input);
 
       const operations: any[] = [];
 
@@ -184,10 +171,12 @@ export const indexData = jwtAuthedProcedure
         })
       );
 
+      // console.log("🚀 ~ operations:", operations)
+
       // 3. Execute all database operations in a single transaction
       await prisma.$transaction(operations);
 
-      // createS3Blobs(input).map((blob) => upload_AWS_S3(blob));
+      createS3Blobs(input).map((blob) => upload_AWS_S3(blob));
 
       // 4. Propagate blobs to storages
       if (blobPropagator) {
