@@ -8,9 +8,9 @@ import {
 } from "../../middlewares/withExpands";
 import { publicProcedure } from "../../procedures";
 import { retrieveBlobData } from "../../utils";
+import { get_AWS_S3 } from "../../utils/aws_s3_blob";
 import { createBlobSelect } from "./common/selects";
 import { serializeBlob, serializedBlobSchema } from "./common/serializers";
-import { get_AWS_S3 } from "../../utils/aws_s3_blob";
 
 const inputSchema = z
   .object({
@@ -58,12 +58,12 @@ export const getByBlobId = publicProcedure
 
     // 取AWS_S3 blobData
     let blobData = await get_AWS_S3({ versionedHash: id });
-    if (blobData.length) {
+    if (blobData?.length) {
       // 去掉 ""
-      blobData = blobData.slice(1,-1)
+      blobData = blobData.slice(1, -1);
     }
     return serializeBlob({
       ...queriedBlob,
-      data: blobData,
+      data: blobData || "",
     });
   });
