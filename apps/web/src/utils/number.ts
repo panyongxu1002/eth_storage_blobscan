@@ -39,7 +39,8 @@ export function performDiv(a: BigIntLike, b: BigIntLike, precision = 16) {
   const b_ = BigInt(b);
 
   if (b_ === BigInt(0)) {
-    throw new Error("Division by zero");
+    // throw new Error("Division by zero");
+    return 0;
   }
 
   const scaleFactor = 10 ** precision;
