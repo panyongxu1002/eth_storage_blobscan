@@ -199,7 +199,8 @@ const BlobTransactionCard: FC<BlobTransactionCardProps> = function ({
                     />
                   </div>
                 ) : (
-                  <Skeleton width={isCompact ? "90%" : 320} size="xs" />
+                    null
+                    // <Skeleton width={isCompact ? "90%" : 320} size="xs" />
                 )}
                 <div className="flex gap-2 text-xs">
                   {blobsOnTx ? (
