@@ -53,6 +53,11 @@ export const getAll = publicProcedure
         where: {
           ...transactionFilters,
           block: blockFilters,
+          NOT: {
+            blobs: {
+              none: {}
+            }
+          }
         },
         orderBy: [
           {

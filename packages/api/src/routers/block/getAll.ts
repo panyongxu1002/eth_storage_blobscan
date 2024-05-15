@@ -54,7 +54,15 @@ export const getAll = publicProcedure
         where: {
           ...blockFilters,
           transactions: {
-            some: transactionFilters,
+            some: {
+              ...transactionFilters,
+              NOT: {
+                // 过滤掉空blobs
+                blobs: {
+                  none: {}
+                }
+              }
+            },
           },
         },
         orderBy: { number: sort },
@@ -72,7 +80,6 @@ export const getAll = publicProcedure
     const isTransactionSelectExpanded = !isEmptyObject(
       ctx.expands.expandedTransactionSelect
     );
-
     let blocks: QueriedBlock[] = queriedBlocks;
 
     if (isTransactionSelectExpanded) {
