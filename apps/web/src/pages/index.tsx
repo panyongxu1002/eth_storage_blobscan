@@ -51,7 +51,7 @@ const Home: NextPage = () => {
     api.stats.getBlockDailyStats.useQuery({
       timeFrame: DAILY_STATS_TIMEFRAME,
     });
-  const { blocks, transactions, blobs } = useMemo(() => {
+  const { blocks, transactions } = useMemo(() => {
     if (!rawBlocksData) {
       return { blocks: [], transactions: [], blobs: [] };
     }
@@ -114,7 +114,7 @@ const Home: NextPage = () => {
       </div>
       <div className="flex w-full flex-col gap-8 sm:gap-10">
         <div className="grid grid-cols-2 space-y-6 lg:grid-cols-10 lg:gap-6 lg:space-y-0">
-          <div className="col-span-2 sm:col-span-4">
+          {/* <div className="col-span-2 sm:col-span-4">
             <DailyBlobGasComparisonChart
               days={dailyBlockStats?.days}
               blobAsCalldataGasUsed={
@@ -123,24 +123,8 @@ const Home: NextPage = () => {
               blobGasUsed={dailyBlockStats?.totalBlobGasUsed}
               opts={{ toolbox: { show: false } }}
             />
-          </div>
-          <div className="col-span-2 grid w-full grid-cols-2 gap-2 sm:col-span-2 sm:grid-cols-2">
-            <div className="col-span-2">
-              <MetricCard
-                name="Total Tx Fees Saved"
-                metric={{
-                  value:
-                    typeof overallStats?.block?.totalBlobAsCalldataFee !==
-                      "undefined" &&
-                    typeof overallStats?.block?.totalBlobFee !== "undefined"
-                      ? overallStats.block.totalBlobAsCalldataFee -
-                        overallStats.block.totalBlobFee
-                      : undefined,
-                  type: "ethereum",
-                }}
-                compact
-              />
-            </div>
+          </div> */}
+          <div className="col-span-2 grid w-full grid-cols-2 gap-2 sm:col-span-4 sm:grid-cols-2">
             <MetricCard
               name="Total Blocks"
               metric={{
@@ -171,7 +155,7 @@ const Home: NextPage = () => {
               compact
             />
           </div>
-          <div className="col-span-2 sm:col-span-4">
+          <div className="col-span-2 sm:col-span-6">
             <DailyTransactionsChart
               days={dailyTxStats?.days}
               transactions={dailyTxStats?.totalTransactions}
@@ -180,7 +164,7 @@ const Home: NextPage = () => {
             />
           </div>
         </div>
-        <div className="grid grid-cols-1 items-stretch justify-stretch gap-6 lg:grid-cols-3">
+        <div className="grid grid-cols-1 items-stretch justify-stretch gap-6 lg:grid-cols-2">
           <Card
             header={
               <div className="flex items-center justify-between gap-5">
@@ -262,44 +246,6 @@ const Home: NextPage = () => {
                           blobs={tx.blobs}
                           compact
                         />
-                      </div>
-                    ),
-                  }))}
-                />
-              )}
-            </div>
-          </Card>
-          <Card
-            header={
-              <div className="flex items-center justify-between gap-5">
-                <div>Latest Blobs</div>
-                <Button
-                  variant="outline"
-                  label="View All Blobs"
-                  onClick={() => void router.push(buildBlobsRoute())}
-                />
-              </div>
-            }
-            emptyState="No blobs"
-          >
-            <div className="h-[650px] sm:h-[630px]">
-              {latestBlocksLoading ? (
-                <div className="flex flex-col gap-3">
-                  {Array(LATEST_ITEMS_LENGTH)
-                    .fill(0)
-                    .map((_, i) => (
-                      <div className={CARD_HEIGHT} key={i}>
-                        <BlobTransactionCard compact />
-                      </div>
-                    ))}
-                </div>
-              ) : (
-                <SlidableList
-                  items={blobs.map((b) => ({
-                    id: b.versionedHash,
-                    element: (
-                      <div className={CARD_HEIGHT} key={b.versionedHash}>
-                        <BlobCard blob={b} transactions={[b.tx]} compact />
                       </div>
                     ),
                   }))}

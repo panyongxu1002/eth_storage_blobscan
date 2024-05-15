@@ -31,7 +31,7 @@ export const BottomBarLayout = () => {
         <ExplorerDetails />
       </div>
       <div className="mt-4 flex flex-col items-center gap-3 sm:mt-8">
-        <div className="flex items-center gap-2">
+        {/* <div className="flex items-center gap-2">
           {EXTERNAL_APPS.map(({ icon, href }) => (
             <Link key={href} href={href} isExternal hideExternalIcon>
               <Button variant="icon" icon={icon} size="md" />
@@ -73,11 +73,11 @@ export const BottomBarLayout = () => {
               </div>
             </>
           )}
-        </div>
+        </div> */}
 
         <div className="flex gap-2">
           <div className="text-sm text-contentTertiary-light dark:text-contentTertiary-dark">
-            Blobscan © 2024
+            ES Scan © {new Date().getFullYear()}
           </div>
         </div>
       </div>

@@ -73,7 +73,7 @@ export const NavMenusSection: React.FC = () => {
                 },
               ]}
             />
-            {!!env.NEXT_PUBLIC_SUPPORTED_NETWORKS?.length && (
+            {/* {!!env.NEXT_PUBLIC_SUPPORTED_NETWORKS?.length && (
               <NavItem
                 label="Networks"
                 icon={<EthereumIcon />}
@@ -81,7 +81,7 @@ export const NavMenusSection: React.FC = () => {
                   env.NEXT_PUBLIC_SUPPORTED_NETWORKS || "[]"
                 )}
               />
-            )}
+            )} */}
             <NavItem
               label="Monitoring "
               icon={<PresentationChartBarIcon />}
