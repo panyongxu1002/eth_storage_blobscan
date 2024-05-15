@@ -1,12 +1,10 @@
 import React from "react";
-import { ClockIcon } from "@heroicons/react/24/solid";
 
 import "react-loading-skeleton/dist/skeleton.css";
 import Skeleton from "react-loading-skeleton";
 
 import { api } from "~/api-client";
-import { env } from "~/env.mjs";
-import { capitalize, formatNumber, formatTtl } from "~/utils";
+import { formatNumber } from "~/utils";
 
 type ExplorerDetailsItemProps = {
   name: React.ReactNode;
@@ -34,7 +32,6 @@ function ExplorerDetailsItem({
 
 export function ExplorerDetails() {
   const { data: syncStateData } = api.syncState.getState.useQuery();
-  const { data: blobStoragesState } = api.blobStoragesState.getState.useQuery();
   const explorerDetailsItems = [
     // { name: "Network", value: capitalize(env.NEXT_PUBLIC_NETWORK_NAME) },
     {

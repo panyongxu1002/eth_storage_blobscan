@@ -6,10 +6,8 @@ import { BlobscanLogo } from "~/components/BlobscanLogo";
 import { Button } from "~/components/Button";
 import { Card } from "~/components/Cards/Card";
 import { MetricCard } from "~/components/Cards/MetricCard";
-import { BlobCard } from "~/components/Cards/SurfaceCards/BlobCard";
 import { BlobTransactionCard } from "~/components/Cards/SurfaceCards/BlobTransactionCard";
 import { BlockCard } from "~/components/Cards/SurfaceCards/BlockCard";
-import { DailyBlobGasComparisonChart } from "~/components/Charts/Block";
 import { DailyTransactionsChart } from "~/components/Charts/Transaction";
 import { Link } from "~/components/Link";
 import { SearchInput } from "~/components/SearchInput";
@@ -18,7 +16,6 @@ import { api } from "~/api-client";
 import NextError from "~/pages/_error";
 import type { FullBlock } from "~/types";
 import {
-  buildBlobsRoute,
   buildBlocksRoute,
   buildTransactionsRoute,
   deserializeBlockOverallStats,
@@ -47,7 +44,7 @@ const Home: NextPage = () => {
     api.stats.getTransactionDailyStats.useQuery({
       timeFrame: DAILY_STATS_TIMEFRAME,
     });
-  const { data: dailyBlockStats, error: dailyBlockStatsErr } =
+  const { error: dailyBlockStatsErr } =
     api.stats.getBlockDailyStats.useQuery({
       timeFrame: DAILY_STATS_TIMEFRAME,
     });

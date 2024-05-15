@@ -6,8 +6,6 @@ import {
   XMarkIcon,
 } from "@heroicons/react/24/solid";
 
-import { env } from "~/env.mjs";
-import EthereumIcon from "~/icons/ethereum.svg";
 import {
   buildBlobStatsRoute,
   buildBlockStatsRoute,
