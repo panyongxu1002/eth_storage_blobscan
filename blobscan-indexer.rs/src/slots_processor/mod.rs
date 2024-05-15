@@ -270,10 +270,11 @@ impl SlotsProcessor {
             "transactions_entities_other: {:?}",
             transactions_entities_other
         );
-        blobscan_client
-            .index(block_entity_other, transactions_entities_other, vec![])
-            .await
-            .map_err(SlotProcessingError::ClientError)?;
+
+        // blobscan_client
+        //     .index(block_entity_other, transactions_entities_other, vec![])
+        //     .await
+        //     .map_err(SlotProcessingError::ClientError)?;
 
         info!(
             target = "slots_processor",
