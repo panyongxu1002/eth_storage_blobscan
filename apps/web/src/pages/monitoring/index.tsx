@@ -4,9 +4,9 @@ const Monitoring: NextPage = () => {
   return (
     <iframe
       title="ethstorage"
-      src="https://grafana.ethstorage.io/d-solo/fdfcc57c-30fb-424e-8dc5-b0cf7bcce84b/ethstorage-monitoring?orgId=2&refresh=5m&from=now-1m&to=now&panelId=13"
+      src="https://grafana.ethstorage.io/d/es-node-mining-state-sepolia/ethstorage-monitoring-sepolia?orgId=2&refresh=5m&from=1715817722383&to=1715839322383"
       width="100%"
-      height="600"
+      height="100%"
     />
   );
 };
