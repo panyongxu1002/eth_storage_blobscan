@@ -6,6 +6,30 @@ Blobscan is the first blockchain explorer that helps to navigate and visualize s
 
 To learn more about Blobscan, please check out our [documentation website](https://docs.blobscan.com).
 
+# 部署
+- 构建
+```
+  sudo pnpm build
+```
+
+- 启动pm2
+```
+  pm2 start pm2.config.js
+```
+- 查看pm2 运行的进程
+```
+  pm2 ls
+```
+
+- 如果代码有更新 重新运行 `sudo pnpm build` 后再重启 pm2 进程
+目前直接重启有些小问题 需要先 停止进程(`3000 or 3001`)后再重启
+
+
+```
+  pm2 reload blobscan-api
+  // or 
+  pm2 reload blobscan-web
+```
 # Features
 
 - **Blob explorer** - Delve into blobs and examine their content. Decode them in various formats.
