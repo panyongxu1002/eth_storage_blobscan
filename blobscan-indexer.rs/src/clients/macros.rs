@@ -16,6 +16,9 @@ macro_rules! json_get {
           req = req.bearer_auth($auth_token);
         }
 
+        // 设置超时为 10 秒
+        req = req.timeout(std::time::Duration::from_secs(10));
+
         let resp = if $exp_backoff.is_some() {
             match backoff::future::retry_notify(
                 $exp_backoff.unwrap(),
