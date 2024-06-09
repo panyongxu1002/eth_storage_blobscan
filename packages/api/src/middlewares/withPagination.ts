@@ -19,7 +19,7 @@ export const withPagination = t.middleware(({ next, input }) => {
     ctx: {
       pagination: {
         take: limit,
-        skip: (offset - 1) * limit,
+        skip: ((offset === 0 ? 1 : offset) - 1) * limit,
       } as const,
     },
   });
