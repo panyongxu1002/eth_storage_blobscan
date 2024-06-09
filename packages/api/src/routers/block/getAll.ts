@@ -60,7 +60,10 @@ export const getAll = publicProcedure
                 // 过滤掉空blobs
                 blobs: {
                   none: {}
-                }
+                },
+              },
+              toId: {
+                equals: '0x804c520d3c084c805e37a35e90057ac32831f96f'
               }
             },
           },
@@ -76,7 +79,7 @@ export const getAll = publicProcedure
         })
         .then((stats) => stats?.totalBlocks ?? 0),
     ]);
-
+    console.log('[ queriedBlocks ] >', queriedBlocks)
     const isTransactionSelectExpanded = !isEmptyObject(
       ctx.expands.expandedTransactionSelect
     );

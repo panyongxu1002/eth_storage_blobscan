@@ -57,6 +57,9 @@ export const getAll = publicProcedure
             blobs: {
               none: {}
             }
+          },
+          toId: {
+            equals: '0x804c520d3c084c805e37a35e90057ac32831f96f'
           }
         },
         orderBy: [
