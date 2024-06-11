@@ -60,6 +60,7 @@ export const SlidableList: FC<SlidableListProps> = function ({
             ...style,
           }}
         >
+          {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
           <div ref={(ref: any) => ref && refMap.set(item, ref)} key={item.id}>
             {item.element}
           </div>

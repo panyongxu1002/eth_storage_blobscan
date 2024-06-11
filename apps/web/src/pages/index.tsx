@@ -5,10 +5,10 @@ import { useRouter } from "next/router";
 import { BlobscanLogo } from "~/components/BlobscanLogo";
 import { Button } from "~/components/Button";
 import { Card } from "~/components/Cards/Card";
-import { MetricCard } from "~/components/Cards/MetricCard";
+// import { MetricCard } from "~/components/Cards/MetricCard";
 import { BlobTransactionCard } from "~/components/Cards/SurfaceCards/BlobTransactionCard";
 import { BlockCard } from "~/components/Cards/SurfaceCards/BlockCard";
-import { DailyTransactionsChart } from "~/components/Charts/Transaction";
+// import { DailyTransactionsChart } from "~/components/Charts/Transaction";
 import { Link } from "~/components/Link";
 import { SearchInput } from "~/components/SearchInput";
 import { SlidableList } from "~/components/SlidableList";
@@ -40,6 +40,7 @@ const Home: NextPage = () => {
   });
   const { data: rawOverallStats, error: overallStatsErr } =
     api.stats.getAllOverallStats.useQuery();
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { data: dailyTxStats, error: dailyTxStatsErr } =
     api.stats.getTransactionDailyStats.useQuery({
       timeFrame: DAILY_STATS_TIMEFRAME,
@@ -92,6 +93,7 @@ const Home: NextPage = () => {
     );
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const totalBlobSize = overallStats?.blob?.totalBlobSize;
 
   return (
