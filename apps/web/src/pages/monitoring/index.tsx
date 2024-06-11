@@ -4,7 +4,7 @@ const Monitoring: NextPage = () => {
   return (
     <iframe
       title="ethstorage"
-      src="https://grafana.ethstorage.io/d/es-node-mining-state-sepolia/ethstorage-monitoring-sepolia?orgId=2&refresh=5m&from=1715817722383&to=1715839322383"
+      src="https://grafana.ethstorage.io/d/es-node-mining-state-sepolia/ethstorage-monitoring-sepolia?orgId=2&refresh=5m"
       width="100%"
       height="1294"
     />

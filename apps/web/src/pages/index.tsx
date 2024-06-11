@@ -22,7 +22,7 @@ import {
   deserializeFullBlock,
 } from "~/utils";
 
-const LATEST_ITEMS_LENGTH = 5;
+const LATEST_ITEMS_LENGTH = 20;
 const DAILY_STATS_TIMEFRAME = "15d";
 
 const CARD_HEIGHT = "sm:h-28";
@@ -44,10 +44,9 @@ const Home: NextPage = () => {
     api.stats.getTransactionDailyStats.useQuery({
       timeFrame: DAILY_STATS_TIMEFRAME,
     });
-  const { error: dailyBlockStatsErr } =
-    api.stats.getBlockDailyStats.useQuery({
-      timeFrame: DAILY_STATS_TIMEFRAME,
-    });
+  const { error: dailyBlockStatsErr } = api.stats.getBlockDailyStats.useQuery({
+    timeFrame: DAILY_STATS_TIMEFRAME,
+  });
   const { blocks, transactions } = useMemo(() => {
     if (!rawBlocksData) {
       return { blocks: [], transactions: [], blobs: [] };
@@ -121,7 +120,7 @@ const Home: NextPage = () => {
               opts={{ toolbox: { show: false } }}
             />
           </div> */}
-          <div className="col-span-2 grid w-full grid-cols-2 gap-2 sm:col-span-4 sm:grid-cols-2">
+          {/* <div className="col-span-2 grid w-full grid-cols-2 gap-2 sm:col-span-4 sm:grid-cols-2">
             <MetricCard
               name="Total Blocks"
               metric={{
@@ -159,7 +158,7 @@ const Home: NextPage = () => {
               opts={{ toolbox: { show: false } }}
               compact
             />
-          </div>
+          </div> */}
         </div>
         <div className="grid grid-cols-1 items-stretch justify-stretch gap-6 lg:grid-cols-2">
           <Card
@@ -227,25 +226,31 @@ const Home: NextPage = () => {
                 </div>
               ) : (
                 <SlidableList
-                  items={transactions.map((tx) => ({
-                    id: tx.hash,
-                    element: (
-                      <div className={CARD_HEIGHT} key={tx.hash}>
-                        <BlobTransactionCard
-                          transaction={{
-                            from: tx.from,
-                            to: tx.to,
-                            hash: tx.hash,
-                            rollup: tx.rollup,
-                            blobGasBaseFee: tx.blobGasBaseFee,
-                            blobGasMaxFee: tx.blobGasMaxFee,
-                          }}
-                          blobs={tx.blobs}
-                          compact
-                        />
-                      </div>
-                    ),
-                  }))}
+                  items={transactions
+                    .filter(
+                      (tx) =>
+                        tx.to.toLocaleLowerCase() ==
+                        "0x804c520d3c084c805e37a35e90057ac32831f96f"
+                    )
+                    .map((tx) => ({
+                      id: tx.hash,
+                      element: (
+                        <div className={CARD_HEIGHT} key={tx.hash}>
+                          <BlobTransactionCard
+                            transaction={{
+                              from: tx.from,
+                              to: tx.to,
+                              hash: tx.hash,
+                              rollup: tx.rollup,
+                              blobGasBaseFee: tx.blobGasBaseFee,
+                              blobGasMaxFee: tx.blobGasMaxFee,
+                            }}
+                            blobs={tx.blobs}
+                            compact
+                          />
+                        </div>
+                      ),
+                    }))}
                 />
               )}
             </div>
